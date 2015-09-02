@@ -13,56 +13,59 @@ import java.io.IOException;
 /**
  * Created by Leebs on 5/18/15.
  */
-public class DownloadSingleFile extends AsyncTask<String, Integer, String>{
+public class DownloadSingleFile extends AsyncTask<String, Integer, Integer>{
 
         @Override
-        // params passed in are of the form:[hostname,username,password,localfile,targetfile]
-        protected String doInBackground(String... params) {
+
+        protected Integer doInBackground(String... params) {
             SSHClient ssh = new SSHClient();
             ssh.addHostKeyVerifier(new PromiscuousVerifier());
             try {
-
                 ssh.connect(params[0]);
                 // ssh.connect()
-
             } catch (IOException e) {
-                Log.v("IO", "cannot establish connection");
-                return "not connecting";
+                Log.d("IO", "cannot establish connection");
+                return 0;
             }
-
             try {
                 //ssh.authPassword
                 ssh.authPassword(params[1], params[2]);
             } catch (UserAuthException e) {
-                Log.v("Auth", "bad user authorization");
-            } catch (TransportException e) {
-                Log.v("Transport", "transport exception (?)");
-            }
+                Log.d("Auth", "bad user authorization");
 
+            } catch (TransportException e) {
+                Log.d("Transport", "transport exception (?)");
+                return 0;
+            }
             try {
 
-                ssh.newSCPFileTransfer().download(params[4], params[3]);
-
-                //todo -- UPLOAD  ssh.newSCPFileTransfer().upload("/storage/emulated/0/test.txt", "/Users/Leebs/Desktop");
+                ssh.newSCPFileTransfer().upload(params[3], params[4]);
+                //TODO --> download files from remote to local -- ssh.newSCPFileTransfer().download(params[4], params[3]);
+                //                              (remotepath, localpath)
             }catch (IOException e) {
-                Log.v("IO", "IO exception --  unable to download");
+                Log.d("IO", "IO exception --  unable to download");
+                return 0;
+
             }
 
             try{
                 ssh.disconnect();
             }catch (IOException e) {
-                Log.v("IO", "IO exception --  unable to disconnect");
-            }
+                Log.d("IO", "IO exception --  unable to disconnect");
+                return 0;
 
-            return "end";
+            }
+            Log.v("success", "Successful SSH connection");
+            return 1;
         }
+
         @Override
         protected void onProgressUpdate(Integer... values) {
 
 
             // Do things like update the progress bar
         }
-        protected void onPostExecute(String result) {
+        protected void onPostExecute(Integer result) {
 
             // Do things like hide the progress bar or change a TextView
         }
