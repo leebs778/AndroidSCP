@@ -1,4 +1,8 @@
 <resources>
     <string name="app_name">AndroidSCP</string>
     <string name="action_settings">Settings</string>
+
+    <string name="title_activity_add_connection">addConnection</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="title_activity_send_file">sendFile</string>
 </resources>
