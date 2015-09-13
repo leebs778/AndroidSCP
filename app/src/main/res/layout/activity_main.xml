@@ -1,5 +1,8 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".MainActivity"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -8,30 +11,42 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     android:paddingBottom="@dimen/activity_vertical_margin"
-   >
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/addConnection"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:clickable="true"
-        android:onClick="addConnect"
-        android:src="@drawable/ic_add_circle_light_blue_a700_48dp"
-        />
+    android:weightSum="1">
+    <com.dexafree.materialList.view.MaterialListView
+        android:layout_width="321dp"
+        android:layout_height="325dp"
+        android:id="@+id/material_listview" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal">
+
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/addConnection"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            android:layout_gravity="bottom"
+            android:onClick="addConnect"
+            app:backgroundTint="#08BFFC"
+            android:src="@drawable/ic_add_white_48dp"
+            />
+
+    </LinearLayout>
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/confirmConnection"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="bottom"
-        android:layout_margin="16dp"
+        android:layout_gravity=""
         android:clickable="true"
         android:onClick="confConnect"
-        android:src="@drawable/ic_keyboard_arrow_right_light_green_a700_48dp"
-        />
+        android:src="@drawable/ic_arrow_forward_white_48dp"
+        app:backgroundTint="#08BFFC"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true" />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/dummy"/>
 
-</LinearLayout>
+</RelativeLayout>

@@ -1,6 +1,7 @@
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:paddingLeft="@dimen/activity_vertical_margin"
@@ -12,9 +13,9 @@
     android:weightSum="1">
 
     <android.support.design.widget.TextInputLayout
-        android:id="@+id/til"
+        android:id="@+id/til1"
         android:layout_width="fill_parent"
-        android:layout_height="90dp">
+        android:layout_height="80dp">
         <EditText
             android:id="@+id/ipEntry"
             android:layout_height="42dp"
@@ -22,12 +23,14 @@
             android:hint="IP Address"
             android:layout_marginTop="20dp"
             android:layout_below="@+id/usernameEntry" />
+
     </android.support.design.widget.TextInputLayout>
+
 
     <android.support.design.widget.TextInputLayout
         android:id="@+id/til2"
         android:layout_width="fill_parent"
-        android:layout_height="90dp">
+        android:layout_height="80dp">
         <EditText
             android:id="@+id/usernameEntry"
             android:layout_height="42dp"
@@ -39,7 +42,7 @@
     <android.support.design.widget.TextInputLayout
         android:id="@+id/til3"
         android:layout_width="fill_parent"
-        android:layout_height="90dp">
+        android:layout_height="80dp">
         <EditText
             android:id="@+id/passwordEntry"
             android:layout_height="42dp"
@@ -51,12 +54,12 @@
     <android.support.design.widget.TextInputLayout
         android:id="@+id/til4"
         android:layout_width="fill_parent"
-        android:layout_height="90dp">
+        android:layout_height="80dp">
         <EditText
             android:id="@+id/nickname"
             android:layout_height="42dp"
             android:layout_width="250dp"
-            android:hint="Nickname (Optional)"
+            android:hint="Nickname"
             android:layout_marginTop="20dp" />
     </android.support.design.widget.TextInputLayout>
 
@@ -64,11 +67,12 @@
         android:id="@+id/submitNewConnection"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="bottom"
+        android:layout_gravity="right"
         android:layout_margin="16dp"
         android:clickable="true"
         android:onClick="submitNewCon_Clicked"
-        android:src="@drawable/ic_add_circle_light_blue_a700_48dp" />
+        android:src="@drawable/ic_done_white_36dp"
+        app:backgroundTint="#08BFFC" />
 
 
 </LinearLayout>
