@@ -1,18 +1,16 @@
 package tothecrunch.com.androidscp;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
-import com.dexafree.materialList.card.Card;
-import com.dexafree.materialList.card.provider.BasicListCardProvider;
-import com.dexafree.materialList.view.MaterialListView;
-
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 //TODO
 //  • if user has no recent connections, change color of "send file" icon to dark grey
@@ -20,11 +18,12 @@ import java.util.Arrays;
 
 public class MainActivity extends Activity {
     Boolean sharedPrefWipe = false;
-    String[][] connectionsPresent = new String[3][4];
-    Card noCard;
-    MaterialListView mListView;
-    Card card0, card1, card2;
-    Card[] cardsAlive = {null,null,null};
+    List<Connection> connectionsList;
+    DB db;
+    List<Connection> blankList;
+
+    RecyclerView mRecyclerView;
+    ConnectionAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,81 +31,42 @@ public class MainActivity extends Activity {
         setContentView(R.layout.activity_main);
         FloatingActionButton addCon = (FloatingActionButton) findViewById(R.id.addConnection);
         FloatingActionButton confCon = (FloatingActionButton) findViewById(R.id.confirmConnection);
+        mRecyclerView = (RecyclerView) findViewById(R.id.recyclerView);
 
-        mListView = (MaterialListView) findViewById(R.id.material_listview);
-        String[][] connections = getRecentConnections();
+        db = new DB(this);
+        connectionsList = updateConnectionRecyclerList();
+        adapter = new ConnectionAdapter(connectionsList);
 
-        for (int i = 0; i < connections.length; i++) {
-            System.out.println(Arrays.toString(connections[i]));
-        }
-        if (!haveConnections(connections)) {
-            noCard = addCard(mListView, "No Connections!", "add a connection");
-            cardsAlive[0] = noCard;
-        } else {
-            try {
-                mListView.remove(cardsAlive[0]); // removes the "No Card" card
-            } catch (Exception e) {
-                System.out.println("Tried removing the noCard Card -- it wasnt there!");
-            }
-            if (connections[0][0] != null) {
-                card0 = addCard(mListView, connections[0][3], connections[0][1] + "@" + connections[0][0]);
-                cardsAlive[0] = card0;
-            }
-            if (connections[1][0] != null) {
-                card1 = addCard(mListView, connections[1][3], connections[1][1] + "@" + connections[1][0]);
-                cardsAlive[1] = card1;
-            }
-            if (connections[2][0] != null) {
-                card2 = addCard(mListView, connections[2][3], connections[2][1] + "@" + connections[2][0]);
-                cardsAlive[2] = card2;
-            }
-        }
+
+        mRecyclerView.setAdapter(adapter);
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        mRecyclerView.setHasFixedSize(true);
+        RecyclerView.ItemDecoration itemDecoration = new
+                DividerItemDecoration(this, DividerItemDecoration.VERTICAL_LIST);
+        mRecyclerView.addItemDecoration(itemDecoration);
+
+
         //final String[] FileParamsTest = {"192.168.0.14", "Leebs", "beentothecrunch", "/storage/emulated/0/test.txt", "/Users/Leebs/Desktop/"};
         //Log.d("attempted Connection", FileParams[0] + "," + FileParams[1] + "," + FileParams[2] + "," + FileParams[3] + "," + FileParams[4] + ",");
 
     }
-
-    public Boolean haveConnections(String[][] connections) {
-        Boolean connectionsPresent = false;
-        for (int i = 0; i < connections.length; i++) {
-            if (connections[i][0] != null && connections[i][0] != "") {
-                connectionsPresent = true;
-            }
+    // update our current connection list
+    public List<Connection> updateConnectionRecyclerList(){
+        int connectionCount = db.getConnectionCount();
+        if (connectionCount > 0){
+            // build up our connections saved from SharedPreferences
+            return db.getAllConnections();
+        }else{
+            blankList = Connection.createBlankConnectionList();
+            return blankList;
         }
-        return connectionsPresent;
     }
 
-    public Card addCard(MaterialListView listview, String title, String description) {
-        Card card = new Card.Builder(this)
-                .withProvider(BasicListCardProvider.class)
-                .setTitle(title)
-                .setDescription(description)
-                .setBackgroundColor(getResources().getColor(R.color.cardview_light_background))
-                .setDescriptionColor(getResources().getColor(R.color.description_color))
-                .setTitleColor(getResources().getColor(R.color.grey_title))
-                .endConfig()
-                .build();
-        listview.add(card);
-        return card;
-    }
-
-    public void addConnect(View v) {
-        Intent intent = new Intent(v.getContext(), addConnection.class);
-        startActivityForResult(intent, 100);
-    }
-
-    public void confConnect(View v) {
-        System.out.println("Confirmed Selection");
-    }
-
-    public String[][] getRecentConnections() {
-        SharedPreferences prefs = new ObscuredSharedPreferences(this, this.getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE));
-        String[][] connections = new String[3][4];
-        for (int i = 0; i < connectionsPresent.length; i++) {
-            connections[i][0] = prefs.getString(i + "_IP", null);
-            connections[i][1] = prefs.getString(i + "_USER", null);
-            connections[i][2] = prefs.getString(i + "_PWD", null);
-            connections[i][3] = prefs.getString(i + "_NICK", null);
+    public List<Connection> getSavedConnections() {
+        List<Connection> connections = db.getAllConnections();
+        System.out.println("Saved Connections are as follows");
+        for (Connection cn : connections){
+            System.out.println(cn.toString());
         }
         return connections;
     }
@@ -114,48 +74,35 @@ public class MainActivity extends Activity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == 100) { //if valid entries given, add a card
-            SharedPreferences prefs = new ObscuredSharedPreferences(this, this.getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_APPEND));
-            for (int i = 0; i < connectionsPresent.length; i++) {
-                if (connectionsPresent[i][0] == null) { //only tests if empty spot, doesnt clear when full
-                    System.out.println("adding info to prefs location " + i);
-                    prefs.edit().putString(i + "_IP", data.getExtras().get("IP").toString()).commit();
-                    prefs.edit().putString(i + "_USER", data.getExtras().get("USER").toString()).commit();
-                    prefs.edit().putString(i + "_PWD", data.getExtras().get("PWD").toString()).commit();
-                    prefs.edit().putString(i + "_NICK", data.getExtras().get("NICK").toString()).commit();
-                    break;
-                }
-            }
+            Connection connection = new Connection( data.getExtras().get("IP").toString(),
+                    data.getExtras().get("USER").toString(), data.getExtras().get("PWD").toString(),
+                    data.getExtras().get("NICK").toString());
+            db.addConnection(connection);
+            connectionsList = getSavedConnections();
+            System.out.println(Arrays.toString(connectionsList.toArray()));
+            System.out.println("Last item is :" + connectionsList.get(connectionsList.size() - 1).toString());
 
-            connectionsPresent = getRecentConnections();
-            updateCards();
+            Collections.reverse(connectionsList);
+            adapter = new ConnectionAdapter(connectionsList);
+            mRecyclerView.setAdapter(adapter);
+            mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+            mRecyclerView.setHasFixedSize(true);
+            RecyclerView.ItemDecoration itemDecoration = new
+                    DividerItemDecoration(this, DividerItemDecoration.VERTICAL_LIST);
+            mRecyclerView.addItemDecoration(itemDecoration);
 
         }
     }
-    public void updateCards(){
-        for (int i = 0; i < 3; i++) {
-            System.out.println(Arrays.toString(connectionsPresent[i]));
-        }
-        if (!haveConnections(connectionsPresent)) {
-            noCard = addCard(mListView, "No Connections!", "add a connection");
-            cardsAlive[0] = noCard;
-            System.out.println("Added a noCard on return");
-        } else {
-            mListView.clearAll();
-            if (connectionsPresent[0][0] != null) {
-                card0 = addCard(mListView, connectionsPresent[0][3], connectionsPresent[0][1] + "@" + connectionsPresent[0][0]);
-                cardsAlive[0] = card0;
-            }
-            if (connectionsPresent[1][0] != null) {
-                card1 = addCard(mListView, connectionsPresent[1][3], connectionsPresent[1][1] + "@" + connectionsPresent[1][0]);
-                cardsAlive[1] = card1;
-            }
-            if (connectionsPresent[2][0] != null) {
-                card2 = addCard(mListView, connectionsPresent[2][3], connectionsPresent[2][1] + "@" + connectionsPresent[2][0]);
-                cardsAlive[2] = card2;
-            }
-        }
+    //button click method for +
+    public void addConnect(View v) {
+        Intent intent = new Intent(v.getContext(), addConnection.class);
+        startActivityForResult(intent, 100);
     }
-    public void
+    //button click method for ->
+    public void confConnect(View v) {
+        System.out.println("Confirmed Selection");
+    }
+
 
 }
 

@@ -35,5 +35,4 @@ dependencies {
     compile 'com.android.support:recyclerview-v7:21.0.2'
     compile 'com.android.support:recyclerview-v7:21.0.0'
     compile 'com.github.dexafree:materiallist:3.0.1'
-    compile 'com.github.baoyongzhang:SwipeMenuListView:v1.0.2'
 }
