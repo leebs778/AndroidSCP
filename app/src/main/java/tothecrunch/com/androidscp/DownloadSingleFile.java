@@ -16,12 +16,20 @@ import java.io.IOException;
 public class DownloadSingleFile extends AsyncTask<String, Integer, Integer>{
 
         @Override
-
+        /*
+        params:
+            0 = IP
+            1 = Username
+            2 = Password
+            3 = RemotePath
+            4 = LocalPath
+         */
         protected Integer doInBackground(String... params) {
             SSHClient ssh = new SSHClient();
             ssh.addHostKeyVerifier(new PromiscuousVerifier());
             try {
                 ssh.connect(params[0]);
+
                 // ssh.connect()
             } catch (IOException e) {
                 Log.d("IO", "cannot establish connection");
@@ -45,7 +53,6 @@ public class DownloadSingleFile extends AsyncTask<String, Integer, Integer>{
             }catch (IOException e) {
                 Log.d("IO", "IO exception --  unable to download");
                 return 0;
-
             }
 
             try{
@@ -66,7 +73,8 @@ public class DownloadSingleFile extends AsyncTask<String, Integer, Integer>{
             // Do things like update the progress bar
         }
         protected void onPostExecute(Integer result) {
-
+            // 1 on success
+            System.out.println("After execution our result is " + result);
             // Do things like hide the progress bar or change a TextView
         }
 

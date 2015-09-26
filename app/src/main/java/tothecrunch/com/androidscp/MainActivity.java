@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.ClipData;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
@@ -28,6 +29,7 @@ public class MainActivity extends Activity {
     List<Connection> connectionsList;
     DB db;
     List<Connection> blankList;
+    int position_Last_Clicked;
 
     RecyclerView mRecyclerView;
     ConnectionAdapter adapter;
@@ -59,6 +61,7 @@ public class MainActivity extends Activity {
                 new RecyclerItemClickListener(this, new RecyclerItemClickListener.OnItemClickListener() {
                     @Override public void onItemClick(View view, int position) {
                         Toast.makeText(getApplicationContext(), "Item at "+ position + " clicked", Toast.LENGTH_SHORT).show();
+                        position_Last_Clicked = position;
                         System.out.println(connectionsList.get(position).toString());
                         Intent i = new Intent(getApplicationContext(), FilePickerActivity.class);
                         // This works if you defined the intent filter
@@ -141,7 +144,22 @@ public class MainActivity extends Activity {
         startActivityForResult(intent, 100);
     }
     public void sendFile(Uri uri){
-        DownloadSingleFile sendFile = new DownloadSingleFile();
+        Connection con = connectionsList.get(position_Last_Clicked);
+        /*
+        params:
+            0 = IP
+            1 = Username
+            2 = Password
+            3 = RemotePath
+            4 = LocalPath
+         */
+        String[] connection = {con.getIP(),con.getUsername(),con.getPassword(), uri.getPath(), "/tmp/"};
+        System.out.println("old connection list :\t" + Arrays.toString(connection));
+        String[] connection2 = {"192.168.0.13","Leebs","beentothecrunch", "/storage/emulated/0/Download/chapter0.pdf", "/Users/Leebs/Desktop/"};
+       // System.out.println("attemping to send file to :\t" + Arrays.toString(connection2));
+       // new DownloadSingleFile().execute(connection2[0], connection2[1], connection2[2], connection2[3],connection2[4]);
+        AsyncTask fileUpload = new DownloadSingleFile().execute(con.getIP(), con.getUsername(), con.getPassword(), uri.getPath(), "/temp/");
+        
     }
 
 }
