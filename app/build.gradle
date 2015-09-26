@@ -1,13 +1,13 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 21
-    buildToolsVersion "23"
+    compileSdkVersion 23
+    buildToolsVersion "23.0.1"
 
     defaultConfig {
         applicationId "tothecrunch.com.androidscp"
         minSdkVersion 15
-        targetSdkVersion 21
+        targetSdkVersion 23
         versionCode 1
         versionName "1.0"
     }
@@ -17,6 +17,9 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+}
+repositories {
+    jcenter()
 }
 
 dependencies {
@@ -30,9 +33,10 @@ dependencies {
     compile files('libs/bcprov-ext-jdk15on-152.jar')
     compile files('libs/sshj-0.9.0.jar')
     compile 'com.android.support:design:22.2.0'
-    compile "com.android.support:appcompat-v7:21.0.+"
+    compile "com.android.support:appcompat-v7:23.0.+"
     compile 'com.android.support:recyclerview-v7:21.0.3'
     compile 'com.android.support:recyclerview-v7:21.0.2'
     compile 'com.android.support:recyclerview-v7:21.0.0'
     compile 'com.github.dexafree:materiallist:3.0.1'
+    compile 'com.nononsenseapps:filepicker:2.4.1'
 }

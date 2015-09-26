@@ -26,32 +26,15 @@
         android:layout_height="325dp"
         android:id="@+id/material_listview" />
 -->
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="horizontal">
-
-        <android.support.design.widget.FloatingActionButton
-            android:id="@+id/addConnection"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:clickable="true"
-            android:layout_gravity="bottom"
-            android:onClick="addConnect"
-            app:backgroundTint="#08BFFC"
-            android:src="@drawable/ic_add_white_48dp"
-            />
-
-    </LinearLayout>
     <android.support.design.widget.FloatingActionButton
-        android:id="@+id/confirmConnection"
+        android:id="@+id/addConnection"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity=""
         android:clickable="true"
-        android:onClick="confConnect"
-        android:src="@drawable/ic_arrow_forward_white_48dp"
+        android:layout_gravity="bottom"
+        android:onClick="addConnect"
         app:backgroundTint="#08BFFC"
+        android:src="@drawable/ic_add_white_48dp"
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true" />

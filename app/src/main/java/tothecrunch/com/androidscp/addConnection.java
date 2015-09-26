@@ -10,7 +10,7 @@ import android.widget.EditText;
 
 //TODO
 // • Do not allow "," or ";" in any of the field input
-// • make each field required -- (except nickname field)
+// • checkbox to show/hide password
 
 public class addConnection extends Activity {
     EditText mIPEntry;

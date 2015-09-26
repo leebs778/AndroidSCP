@@ -1,12 +1,19 @@
 package tothecrunch.com.androidscp;
 
 import android.app.Activity;
+import android.content.ClipData;
 import android.content.Intent;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.Toast;
+
+import com.nononsenseapps.filepicker.FilePickerActivity;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -25,16 +32,19 @@ public class MainActivity extends Activity {
     RecyclerView mRecyclerView;
     ConnectionAdapter adapter;
 
+    static final int ADD_CONNECTION_REQUEST = 1;
+    static final int PICK_FILE_REQUEST = 2;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         FloatingActionButton addCon = (FloatingActionButton) findViewById(R.id.addConnection);
-        FloatingActionButton confCon = (FloatingActionButton) findViewById(R.id.confirmConnection);
         mRecyclerView = (RecyclerView) findViewById(R.id.recyclerView);
 
         db = new DB(this);
         connectionsList = updateConnectionRecyclerList();
+        Collections.reverse(connectionsList);
         adapter = new ConnectionAdapter(connectionsList);
 
 
@@ -45,10 +55,30 @@ public class MainActivity extends Activity {
                 DividerItemDecoration(this, DividerItemDecoration.VERTICAL_LIST);
         mRecyclerView.addItemDecoration(itemDecoration);
 
+        mRecyclerView.addOnItemTouchListener(
+                new RecyclerItemClickListener(this, new RecyclerItemClickListener.OnItemClickListener() {
+                    @Override public void onItemClick(View view, int position) {
+                        Toast.makeText(getApplicationContext(), "Item at "+ position + " clicked", Toast.LENGTH_SHORT).show();
+                        System.out.println(connectionsList.get(position).toString());
+                        Intent i = new Intent(getApplicationContext(), FilePickerActivity.class);
+                        // This works if you defined the intent filter
+                        // Intent i = new Intent(Intent.ACTION_GET_CONTENT);
+                        // Set these depending on your use case. These are the defaults.
+                        i.putExtra(FilePickerActivity.EXTRA_ALLOW_MULTIPLE, true);
+                        i.putExtra(FilePickerActivity.EXTRA_ALLOW_CREATE_DIR, false);
+                        i.putExtra(FilePickerActivity.EXTRA_MODE, FilePickerActivity.MODE_FILE);
+                        // Configure initial directory by specifying a String.
+                        // You could specify a String like "/storage/emulated/0/", but that can
+                        // dangerous. Always use Android's API calls to get paths to the SD-card or
+                        // internal memory.
+                        i.putExtra(FilePickerActivity.EXTRA_START_PATH, Environment.getExternalStorageDirectory().getPath());
+                        startActivityForResult(i, 200);
+                    }
+                })
+        );
 
         //final String[] FileParamsTest = {"192.168.0.14", "Leebs", "beentothecrunch", "/storage/emulated/0/test.txt", "/Users/Leebs/Desktop/"};
         //Log.d("attempted Connection", FileParams[0] + "," + FileParams[1] + "," + FileParams[2] + "," + FileParams[3] + "," + FileParams[4] + ",");
-
     }
     // update our current connection list
     public List<Connection> updateConnectionRecyclerList(){
@@ -73,7 +103,8 @@ public class MainActivity extends Activity {
 
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == 100) { //if valid entries given, add a card
+        System.out.println("requestCode " + requestCode);
+        if (requestCode== 100) { //if valid entries given, add a card
             Connection connection = new Connection( data.getExtras().get("IP").toString(),
                     data.getExtras().get("USER").toString(), data.getExtras().get("PWD").toString(),
                     data.getExtras().get("NICK").toString());
@@ -90,7 +121,18 @@ public class MainActivity extends Activity {
             RecyclerView.ItemDecoration itemDecoration = new
                     DividerItemDecoration(this, DividerItemDecoration.VERTICAL_LIST);
             mRecyclerView.addItemDecoration(itemDecoration);
+        }else if (requestCode == 200){
+            System.out.println("Return from file pick activity");
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                ClipData clip = data.getClipData();
 
+                if (clip != null) {
+                    for (int i = 0; i < clip.getItemCount(); i++) {
+                        Uri uri = clip.getItemAt(i).getUri();
+                        sendFile(uri);
+                    }
+                }
+            }
         }
     }
     //button click method for +
@@ -98,11 +140,9 @@ public class MainActivity extends Activity {
         Intent intent = new Intent(v.getContext(), addConnection.class);
         startActivityForResult(intent, 100);
     }
-    //button click method for ->
-    public void confConnect(View v) {
-        System.out.println("Confirmed Selection");
+    public void sendFile(Uri uri){
+        DownloadSingleFile sendFile = new DownloadSingleFile();
     }
-
 
 }
 

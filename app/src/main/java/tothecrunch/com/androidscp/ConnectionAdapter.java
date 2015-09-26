@@ -48,15 +48,13 @@ public class ConnectionAdapter extends RecyclerView.Adapter<ConnectionAdapter.Vi
     //new selection methods
     */
 
-
-
     public ConnectionAdapter(List<Connection> Connection) {
         mConnections = Connection;
     }
+
     public static class ViewHolder extends RecyclerView.ViewHolder {
         // Your holder should contain a member variable
         // for any view that will be set as you render a row
-
 
         public TextView mNickText;
         public TextView mLoginText;
@@ -67,11 +65,12 @@ public class ConnectionAdapter extends RecyclerView.Adapter<ConnectionAdapter.Vi
             // Stores the itemView in a public final member variable that can be used
             // to access the context from any ViewHolder instance.
             super(itemView);
-            itemView.setClickable(true);
+
 
             mNickText = (TextView) itemView.findViewById(R.id.nickname_Text);
             mLoginText = (TextView) itemView.findViewById(R.id.login_Text);
         }
+
     }
     // ... constructor and member variables
 
@@ -88,6 +87,7 @@ public class ConnectionAdapter extends RecyclerView.Adapter<ConnectionAdapter.Vi
         ViewHolder viewHolder = new ViewHolder(ConnectionView);
         return viewHolder;
     }
+
 
     // Involves populating data into the item through holder
     @Override
