@@ -8,14 +8,16 @@ import net.schmizz.sshj.transport.TransportException;
 import net.schmizz.sshj.transport.verification.PromiscuousVerifier;
 import net.schmizz.sshj.userauth.UserAuthException;
 
+import java.io.File;
 import java.io.IOException;
 
 /**
  * Created by Leebs on 5/18/15.
  */
-public class DownloadSingleFile extends AsyncTask<String, Integer, Integer>{
 
-        @Override
+
+public class DownloadSingleFile extends AsyncTask<String, Integer, Integer>{
+    long filesize;
         /*
         params:
             0 = IP
@@ -24,9 +26,16 @@ public class DownloadSingleFile extends AsyncTask<String, Integer, Integer>{
             3 = RemotePath
             4 = LocalPath
          */
+        @Override
         protected Integer doInBackground(String... params) {
             SSHClient ssh = new SSHClient();
             ssh.addHostKeyVerifier(new PromiscuousVerifier());
+            File f = new File(params[4]);
+            filesize = f.length();
+            if (filesize == 0){
+
+            }
+            System.out.println("size of file to xfer is " + filesize);
             try {
                 ssh.connect(params[0]);
 
@@ -54,7 +63,6 @@ public class DownloadSingleFile extends AsyncTask<String, Integer, Integer>{
                 Log.d("IO", "IO exception --  unable to download");
                 return 0;
             }
-
             try{
                 ssh.disconnect();
             }catch (IOException e) {

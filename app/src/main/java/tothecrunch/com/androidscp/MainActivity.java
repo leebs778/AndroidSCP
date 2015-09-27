@@ -12,13 +12,16 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
-import android.widget.Toast;
 
 import com.nononsenseapps.filepicker.FilePickerActivity;
 
+import java.io.File;
+import java.text.DecimalFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+
 
 //TODO
 //  • if user has no recent connections, change color of "send file" icon to dark grey
@@ -60,7 +63,6 @@ public class MainActivity extends Activity {
         mRecyclerView.addOnItemTouchListener(
                 new RecyclerItemClickListener(this, new RecyclerItemClickListener.OnItemClickListener() {
                     @Override public void onItemClick(View view, int position) {
-                        Toast.makeText(getApplicationContext(), "Item at "+ position + " clicked", Toast.LENGTH_SHORT).show();
                         position_Last_Clicked = position;
                         System.out.println(connectionsList.get(position).toString());
                         Intent i = new Intent(getApplicationContext(), FilePickerActivity.class);
@@ -69,7 +71,8 @@ public class MainActivity extends Activity {
                         // Set these depending on your use case. These are the defaults.
                         i.putExtra(FilePickerActivity.EXTRA_ALLOW_MULTIPLE, true);
                         i.putExtra(FilePickerActivity.EXTRA_ALLOW_CREATE_DIR, false);
-                        i.putExtra(FilePickerActivity.EXTRA_MODE, FilePickerActivity.MODE_FILE);
+                        i.putExtra(FilePickerActivity.EXTRA_PATHS, true);
+                        i.putExtra(FilePickerActivity.EXTRA_MODE, FilePickerActivity.MODE_FILE_AND_DIR);
                         // Configure initial directory by specifying a String.
                         // You could specify a String like "/storage/emulated/0/", but that can
                         // dangerous. Always use Android's API calls to get paths to the SD-card or
@@ -107,7 +110,7 @@ public class MainActivity extends Activity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         System.out.println("requestCode " + requestCode);
-        if (requestCode== 100) { //if valid entries given, add a card
+        if (requestCode== 100 && resultCode !=0) { //if valid entries given, add a card
             Connection connection = new Connection( data.getExtras().get("IP").toString(),
                     data.getExtras().get("USER").toString(), data.getExtras().get("PWD").toString(),
                     data.getExtras().get("NICK").toString());
@@ -124,18 +127,32 @@ public class MainActivity extends Activity {
             RecyclerView.ItemDecoration itemDecoration = new
                     DividerItemDecoration(this, DividerItemDecoration.VERTICAL_LIST);
             mRecyclerView.addItemDecoration(itemDecoration);
-        }else if (requestCode == 200){
+        }else if (requestCode == 200 && resultCode !=0){
             System.out.println("Return from file pick activity");
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
                 ClipData clip = data.getClipData();
-
                 if (clip != null) {
+                    List<Uri> uriList = new ArrayList<>();
+                    long totalFileSize = 0;
                     for (int i = 0; i < clip.getItemCount(); i++) {
                         Uri uri = clip.getItemAt(i).getUri();
+                        String uriPath = uri.getPath();
+                        File f = new File(uriPath);
+                        long fileSize = f.length();
+                        if (fileSize == 0){  // maybe it's a directory -- recursive check
+                            fileSize = folderSize(f);
+                        }
+                        uriList.add(uri); // add that uri to our list of files to upload
+                        totalFileSize += fileSize; //increment our total count
+                    }
+                    System.out.println("Total transfer size is " + readableFileSize(totalFileSize));
+                    for (Uri uri : uriList){
                         sendFile(uri);
                     }
                 }
             }
+        }else{
+
         }
     }
     //button click method for +
@@ -158,8 +175,27 @@ public class MainActivity extends Activity {
         String[] connection2 = {"192.168.0.13","Leebs","beentothecrunch", "/storage/emulated/0/Download/chapter0.pdf", "/Users/Leebs/Desktop/"};
        // System.out.println("attemping to send file to :\t" + Arrays.toString(connection2));
        // new DownloadSingleFile().execute(connection2[0], connection2[1], connection2[2], connection2[3],connection2[4]);
-        AsyncTask fileUpload = new DownloadSingleFile().execute(con.getIP(), con.getUsername(), con.getPassword(), uri.getPath(), "/temp/");
-        
+
+        new NotificationHelper(getApplicationContext(), "Job one", 1).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, 10);
+        AsyncTask fileUpload = new DownloadSingleFile().execute(con.getIP(), con.getUsername(), con.getPassword(), uri.getPath(), "/tmp/");
+
+    }
+
+    public static long folderSize(File directory) {
+        long length = 0;
+        for (File file : directory.listFiles()) {
+            if (file.isFile())
+                length += file.length();
+            else
+                length += folderSize(file);
+        }
+        return length;
+    }
+    public static String readableFileSize(long size) {
+        if(size <= 0) return "0";
+        final String[] units = new String[] { "B", "kB", "MB", "GB", "TB" };
+        int digitGroups = (int) (Math.log10(size)/Math.log10(1024));
+        return new DecimalFormat("#,##0.#").format(size/Math.pow(1024, digitGroups)) + " " + units[digitGroups];
     }
 
 }
