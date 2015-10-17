@@ -52,7 +52,8 @@ public class ConnectionAdapter extends RecyclerView.Adapter<ConnectionAdapter.Vi
         mConnections = Connection;
     }
 
-    public static class ViewHolder extends RecyclerView.ViewHolder {
+
+    public static class ViewHolder extends RecyclerView.ViewHolder{
         // Your holder should contain a member variable
         // for any view that will be set as you render a row
 
@@ -66,10 +67,10 @@ public class ConnectionAdapter extends RecyclerView.Adapter<ConnectionAdapter.Vi
             // to access the context from any ViewHolder instance.
             super(itemView);
 
-
             mNickText = (TextView) itemView.findViewById(R.id.nickname_Text);
             mLoginText = (TextView) itemView.findViewById(R.id.login_Text);
         }
+
 
     }
     // ... constructor and member variables
@@ -88,7 +89,6 @@ public class ConnectionAdapter extends RecyclerView.Adapter<ConnectionAdapter.Vi
         return viewHolder;
     }
 
-
     // Involves populating data into the item through holder
     @Override
     public void onBindViewHolder(ConnectionAdapter.ViewHolder viewHolder, int position) {
@@ -98,6 +98,8 @@ public class ConnectionAdapter extends RecyclerView.Adapter<ConnectionAdapter.Vi
         // Set item views based on the data model
         TextView nickTextView = viewHolder.mNickText;
         nickTextView.setText(connection.getNickname());
+
+
 
         TextView loginTextView = viewHolder.mLoginText;
         //IP will be blank for our "Please add a connection" entries, test for that
@@ -114,4 +116,5 @@ public class ConnectionAdapter extends RecyclerView.Adapter<ConnectionAdapter.Vi
     public int getItemCount() {
         return mConnections.size();
     }
+
 }

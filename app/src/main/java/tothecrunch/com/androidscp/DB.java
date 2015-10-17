@@ -25,6 +25,7 @@ public class DB extends SQLiteOpenHelper {
     private static final String KEY_USERNAME = "username";
     private static final String KEY_PASSWORD = "password";
     private static final String KEY_NICKNAME = "nickname";
+    private static final String KEY_TARGPATH = "targetpath";
 
     Context context;
 
@@ -37,7 +38,8 @@ public class DB extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase database) {
         database.execSQL("CREATE TABLE IF NOT EXISTS " + TABLE_NAME + " ( _id INTEGER PRIMARY KEY AUTOINCREMENT," +
                 " ip TEXT NOT NULL, username TEXT NOT NULL, "
-                + "password TEXT NOT NULL, nickname INTEGER NOT NULL)");
+                + "password TEXT NOT NULL, nickname INTEGER NOT NULL,"
+                + "targetpath TEXT NOT NULL)");
     }
     public void onUpgrade ( SQLiteDatabase db ,  int oldVersion ,  int newVersion )  {
         // This is only a cache for database Online Data, so ITS upgrade policy is
@@ -53,10 +55,11 @@ public class DB extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
 
         ContentValues values = new ContentValues();
-        values.put(KEY_IP, connection.getIP()); // Contact Name
-        values.put(KEY_USERNAME, connection.getUsername()); // Contact Phone Number
+        values.put(KEY_IP, connection.getIP());
+        values.put(KEY_USERNAME, connection.getUsername());
         values.put(KEY_PASSWORD, connection.getPassword());
         values.put(KEY_NICKNAME, connection.getNickname());
+        values.put(KEY_TARGPATH, connection.getTargetPath());
 
         // Inserting Row
         db.insert(TABLE_NAME, null, values);
@@ -68,13 +71,13 @@ public class DB extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getReadableDatabase();
 
         Cursor cursor = db.query(TABLE_NAME, new String[]{KEY_ID,
-                        KEY_IP, KEY_USERNAME, KEY_PASSWORD, KEY_NICKNAME}, KEY_ID + "=?",
+                        KEY_IP, KEY_USERNAME, KEY_PASSWORD, KEY_NICKNAME, KEY_TARGPATH}, KEY_ID + "=?",
                 new String[]{String.valueOf(id)}, null, null, null, null);
         if (cursor != null)
             cursor.moveToFirst();
 
         Connection connection = new Connection(cursor.getString(1),
-                cursor.getString(2), cursor.getString(3), cursor.getString(4));
+                cursor.getString(2), cursor.getString(3), cursor.getString(4), cursor.getString(5));
         connection.setID(Integer.parseInt(cursor.getString(0)));
         //returns the found connection
         return connection;
@@ -99,7 +102,7 @@ public class DB extends SQLiteOpenHelper {
         if (cursor.moveToFirst()) {
             do {
                 Connection connection = new Connection(cursor.getString(1),
-                        cursor.getString(2),cursor.getString(3),cursor.getString(4));
+                        cursor.getString(2),cursor.getString(3),cursor.getString(4),cursor.getString(5));
                 connection.setID(Integer.parseInt(cursor.getString(0)));
                 // Adding connection to list
                 connectionList.add(connection);
@@ -135,6 +138,7 @@ public class DB extends SQLiteOpenHelper {
         values.put(KEY_USERNAME, connection.getUsername());
         values.put(KEY_PASSWORD, connection.getPassword());
         values.put(KEY_NICKNAME, connection.getNickname());
+        values.put(KEY_TARGPATH, connection.getTargetPath());
 
         // updating row
         return db.update(TABLE_NAME, values, KEY_ID + " = ?",
@@ -146,6 +150,12 @@ public class DB extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
         db.delete(TABLE_NAME, KEY_ID + " = ?",
                 new String[]{String.valueOf(connection.getID())});
+        db.close();
+    }
+
+    public void deleteAllConnections(){
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.execSQL("delete from " + TABLE_NAME);
         db.close();
     }
 

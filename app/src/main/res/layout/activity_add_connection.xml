@@ -1,80 +1,157 @@
-<LinearLayout
+<RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingLeft="@dimen/activity_vertical_margin"
-    android:paddingRight="@dimen/activity_vertical_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
-    android:paddingBottom="@dimen/activity_vertical_margin"
     android:orientation="vertical"
     tools:context="tothecrunch.com.androidscp.addConnection"
     android:weightSum="1">
 
-    <android.support.design.widget.TextInputLayout
-        android:id="@+id/til1"
-        android:layout_width="fill_parent"
-        android:layout_height="80dp">
-        <EditText
-            android:id="@+id/ipEntry"
-            android:layout_height="42dp"
-            android:layout_width="250dp"
-            android:hint="IP Address"
-            android:layout_marginTop="20dp"
-            android:layout_below="@+id/usernameEntry" />
-
-    </android.support.design.widget.TextInputLayout>
-
-
-    <android.support.design.widget.TextInputLayout
-        android:id="@+id/til2"
-        android:layout_width="fill_parent"
-        android:layout_height="80dp">
-        <EditText
-            android:id="@+id/usernameEntry"
-            android:layout_height="42dp"
-            android:layout_width="250dp"
-            android:hint="Username"
-            android:layout_marginTop="20dp" />
-    </android.support.design.widget.TextInputLayout>
-
-    <android.support.design.widget.TextInputLayout
-        android:id="@+id/til3"
-        android:layout_width="fill_parent"
-        android:layout_height="80dp">
-        <EditText
-            android:id="@+id/passwordEntry"
-            android:layout_height="42dp"
-            android:layout_width="250dp"
-            android:hint="Password"
-            android:layout_marginTop="20dp"
-            android:inputType="textPassword"
-            />
-    </android.support.design.widget.TextInputLayout>
-
-    <android.support.design.widget.TextInputLayout
-        android:id="@+id/til4"
-        android:layout_width="fill_parent"
-        android:layout_height="80dp">
-        <EditText
-            android:id="@+id/nickname"
-            android:layout_height="42dp"
-            android:layout_width="250dp"
-            android:hint="Nickname"
-            android:layout_marginTop="20dp" />
-    </android.support.design.widget.TextInputLayout>
-
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/submitNewConnection"
-        android:layout_width="wrap_content"
+    <android.support.v7.widget.Toolbar
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="right"
-        android:layout_margin="16dp"
-        android:clickable="true"
-        android:onClick="submitNewCon_Clicked"
-        android:src="@drawable/ic_done_white_36dp"
-        app:backgroundTint="#08BFFC" />
+        android:id="@+id/connectionsToolbar"
+        android:minHeight="?attr/actionBarSize"
+        android:background="@color/primary_material_dark">
+
+    </android.support.v7.widget.Toolbar>
+
+    <RelativeLayout
+        android:paddingLeft="@dimen/activity_vertical_margin"
+        android:paddingRight="@dimen/activity_vertical_margin"
+        android:paddingTop="20dp"
+        android:paddingBottom="@dimen/activity_vertical_margin"
+        android:orientation="vertical"
+        android:layout_width="310dp"
+        android:layout_height="wrap_content"
+        android:id="@+id/linearLayout"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
+        android:layout_below="@+id/connectionsToolbar">
+
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/til1"
+            android:layout_width="fill_parent"
+            android:layout_height="80dp"
+            android:layout_below="@+id/til5"
+            android:layout_alignParentStart="true">
+            <EditText
+                android:id="@+id/ipEntry"
+                android:layout_height="42dp"
+                android:layout_width="250dp"
+                android:hint="IP Address"
+                android:inputType="phone"
+                android:layout_marginTop="20dp"
+                android:layout_below="@+id/usernameEntry"
+                android:imeOptions="actionNext"
+                android:singleLine="true">
+
+            </EditText>
+
+        </android.support.design.widget.TextInputLayout>
+
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/til2"
+            android:layout_width="fill_parent"
+            android:layout_height="80dp"
+            android:layout_below="@+id/til1"
+            android:layout_alignParentStart="true">
+            <EditText
+                android:id="@+id/usernameEntry"
+                android:layout_height="42dp"
+                android:layout_width="250dp"
+                android:hint="Username"
+                android:layout_marginTop="20dp"
+                android:imeOptions="actionNext"
+                android:singleLine="true"/>
+        </android.support.design.widget.TextInputLayout>
+
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/til3"
+            android:layout_width="fill_parent"
+            android:layout_height="80dp"
+            android:layout_alignParentStart="true"
+            android:layout_below="@+id/til2"
+            android:layout_alignParentEnd="true">
+
+            <EditText
+                android:id="@+id/passwordEntry"
+                android:layout_height="42dp"
+                android:layout_width="250dp"
+                android:hint="Password"
+                android:layout_marginTop="20dp"
+                android:inputType="textPassword"
+                android:imeOptions="actionNext"
+                android:singleLine="true"
+                />
+
+        </android.support.design.widget.TextInputLayout>
+
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/til4"
+            android:layout_width="fill_parent"
+            android:layout_height="80dp"
+            android:layout_below="@+id/til3"
+            android:layout_alignParentStart="true">
+            <EditText
+                android:id="@+id/targetPath"
+                android:layout_height="42dp"
+                android:layout_width="250dp"
+                android:hint="Directory to send file (default is /tmp/)"
+                android:layout_marginTop="20dp"
+                android:imeOptions="actionDone"
+                android:singleLine="true"/>
+        </android.support.design.widget.TextInputLayout>
+
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/submitNewConnection"
+            android:layout_width="64dp"
+            android:layout_height="64dp"
+            android:clickable="true"
+            android:onClick="submitNewCon_Clicked"
+            android:src="@drawable/ic_done_white_36dp"
+            app:backgroundTint="@color/accent_material_dark"
+            app:layout_anchor="@id/linearLayout"
+            android:layout_gravity="right"
+            android:layout_marginRight="4dp"
+            android:layout_alignParentBottom="true"
+            android:layout_alignEnd="@+id/til4" />
+
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/til5"
+            android:layout_width="fill_parent"
+            android:layout_height="80dp"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentStart="true">
+            <EditText
+                android:id="@+id/nickname"
+                android:layout_height="42dp"
+                android:layout_width="250dp"
+                android:hint="Nickname"
+                android:layout_marginTop="20dp"
+                android:imeOptions="actionNext"
+                android:singleLine="true"
+                />
+            <requestFocus />
+        </android.support.design.widget.TextInputLayout>
 
 
-</LinearLayout>
+    </RelativeLayout>
+
+    <android.support.v7.widget.AppCompatCheckBox
+        android:id="@+id/showPassword"
+        android:layout_width="120dp"
+        android:layout_height="30dp"
+        app:backgroundTint="@color/primary_material_light"
+        android:layout_marginRight="90dp"
+        android:checked="false"
+        android:onClick="onCheckboxClicked"
+        android:layout_marginStart="308dp"
+        android:layout_marginBottom="201dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentStart="true">
+    </android.support.v7.widget.AppCompatCheckBox>
+
+
+</RelativeLayout>

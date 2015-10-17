@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--
+    <item name="scp_dark_primary_color" type="color">#1976D2</item>
+    <item name="scp_primary_color" type="color">#2196F3</item>
+    <item name="scp_light_primary_color" type="color">#BBDEFB</item>
+    <item name="scp_text_icon_color" type="color">#FFFFFF</item>
+    <item name="scp_accent_color" type="color">#535DFE</item>
+    <item name="scp_primary_text" type="color">#212121</item>
+    <item name="scp_secondary_text" type="color">#727272</item>
+    <item name="scp_divider_color" type="color">#B6B6B6</item>
+    -->
+    <color name="primary_material_light">#1976d2</color>
+    <color name="primary_dark_material_light">#2196f3</color>
+    <color name="accent_material_light">#536dfe</color>
+    <color name="black">#000000</color>
+    <color name="primary_text_default_material_light">#212121</color>
+    <color name="accent_material_dark">#ff9100</color>
+    <color name="primary_dark_material_dark">#1c81d1</color>
+    <color name="primary_material_dark">#1982fb</color>
+    <color name="background_material_dark">#303030</color>
+</resources>
