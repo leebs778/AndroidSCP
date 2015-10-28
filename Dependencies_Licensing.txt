@@ -1,9 +1,0 @@
-Dependencies & Licensing 
-
-Material List for Listing Connections
-https://android-arsenal.com/details/1/1161
-
-MIT License
-
-• https://github.com/spacecowboy/NoNonsense-FilePicker
-filepicker
